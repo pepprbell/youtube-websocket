@@ -13,7 +13,7 @@ export async function finaliseStream(streamId: string, ws: ServerWebSocket) {
     const liveChat   = streamInfo.getLiveChat()
     
     if (!liveChat) return ws.close(1000, 'Requested content has no available live chat')
-
+        
     liveChat.on('chat-update', action => {
         if (ws.readyState > 1) return liveChat.stop();
         if (!action.is( YTNodes.AddChatItemAction )) return
