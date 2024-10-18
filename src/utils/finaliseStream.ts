@@ -9,8 +9,14 @@ import { paidMessageToJSON } from "../adapters/paidMessage";
 export async function finaliseStream(streamId: string, ws: ServerWebSocket) {
     const youtube = await innertube()
 
-    const streamInfo = await youtube.getInfo(streamId)
-    const liveChat   = streamInfo.getLiveChat()
+    let streamInfo
+    let liveChat = false
+    try {
+        streamInfo = await youtube.getInfo(streamId)
+        liveChat   = streamInfo.getLiveChat()
+    } catch (error) {
+        return ws.close(1000, 'error') 
+    }
     
     if (!liveChat) return ws.close(1000, 'Requested content has no available live chat')
         
