@@ -7,14 +7,8 @@ export async function getChannelInfo(ws : ServerWebSocket) {
 
     const niceId = /^UC.{22}$/.test(ws.data.params.id) ? ws.data.params.id : '@' + ws.data.params.id.replace('@','')
 
-    let youtube
-    let streamData
-    try {
-        youtube  = await innertube()
-        streamData = await youtube.resolveURL(`https://www.youtube.com/${niceId}/live`).catch(() => { return null })
-    } catch (error) {
-        return ws.close(1000, 'error')
-    }
+    const youtube  = await innertube()
+    const streamData = await youtube.resolveURL(`https://www.youtube.com/${niceId}/live`).catch(() => { return null })
     
     if (!streamData?.payload?.videoId) return ws.close(1000, 'Could not find stream by channel identifier')
 
