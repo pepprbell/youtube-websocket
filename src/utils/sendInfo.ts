@@ -17,19 +17,19 @@ export async function sendInfo(streamId: string, ws: ServerWebSocket) {
     if (!liveChat) return ws.close(1000, 'Requested content has no available live chat')
 
     liveChat.on('start', contents => {
-        const view_count = streamInfo.primary_info.view_count.runs[0].text
+        const view_count = streamInfo.primary_info.view_count.runs[0]?.text
         ws.send(parseInt(view_count.replace(/,/g, "")))
     })
 
     setInterval(() => {
         sendViews()
-    }, 120*1000) // 2분에 한번 업데이트
+    }, 30*1000) // 30초에 한번 업데이트
 
     const sendViews = async () => {
         let streamInfo = await youtube.getInfo(streamId)
         let view_count = '0'
         try {
-            view_count = streamInfo.primary_info.view_count.runs[0].text
+            view_count = streamInfo.primary_info.view_count.runs[0]?.text
         } catch {
             view_count = '0'
         }
